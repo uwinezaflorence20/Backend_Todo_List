@@ -39,7 +39,7 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-        
+
         return ResponseEntity.ok(new JwtResponse(jwt, loginRequest.getUsername()));
     }
 
@@ -54,6 +54,7 @@ public class AuthController {
         // Create new user's account
         User user = new User();
         user.setUsername(signUpRequest.getUsername());
+        user.setEmail(signUpRequest.getEmail());
         user.setPassword(encoder.encode(signUpRequest.getPassword()));
         user.setRole("USER");
 
