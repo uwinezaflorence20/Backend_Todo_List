@@ -62,7 +62,12 @@ public class AuthController {
         user.setUsername(signUpRequest.getUsername());
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(encoder.encode(signUpRequest.getPassword()));
-        user.setRole("USER");
+        
+        String role = signUpRequest.getRole();
+        if (role == null || role.isEmpty()) {
+            role = "USER";
+        }
+        user.setRole(role.toUpperCase());
 
         userRepository.save(user);
 
