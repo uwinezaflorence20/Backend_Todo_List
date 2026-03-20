@@ -24,7 +24,7 @@ public class TodoController {
 
     private User getCurrentUser() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepository.findByUsername(userDetails.getUsername()).orElseThrow();
+        return userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
     }
 
     @GetMapping
