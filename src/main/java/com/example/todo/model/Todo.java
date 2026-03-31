@@ -21,6 +21,7 @@ public class Todo {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @org.hibernate.annotations.OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
     @JsonIgnoreProperties({"password", "username", "role"})
     private User user;
 
