@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: com.example.todo.ProfileControllerTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.208 s <<< FAILURE! -- in com.example.todo.ProfileControllerTest
+com.example.todo.ProfileControllerTest -- Time elapsed: 0.208 s <<< ERROR!
+java.lang.IllegalStateException: Login failed for profile_test@example.com: 500 INTERNAL_SERVER_ERROR
+	at com.example.todo.BaseIntegrationTest.login(BaseIntegrationTest.java:72)
+	at com.example.todo.BaseIntegrationTest.registerAndLogin(BaseIntegrationTest.java:182)
+	at com.example.todo.ProfileControllerTest.setup(ProfileControllerTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+

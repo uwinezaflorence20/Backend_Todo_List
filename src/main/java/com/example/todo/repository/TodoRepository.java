@@ -7,5 +7,8 @@ import java.util.List;
 
 public interface TodoRepository extends JpaRepository<Todo, Long> {
     List<Todo> findByUser(User user);
+    List<Todo> findByUserAndCompleted(User user, boolean completed);
     void deleteByUser(User user);
+    long countByUser(User user);
+    long countByUserAndCompleted(User user, boolean completed);
 }

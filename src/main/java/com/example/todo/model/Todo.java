@@ -3,6 +3,7 @@ package com.example.todo.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "todos")
@@ -13,6 +14,7 @@ public class Todo {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Title is required")
     private String title;
 
     private String description;
