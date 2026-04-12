@@ -1,28 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.example.todo.ProfileControllerTest
 -------------------------------------------------------------------------------
-Tests run: 11, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 1.908 s <<< FAILURE! -- in com.example.todo.ProfileControllerTest
-com.example.todo.ProfileControllerTest.getProfile_noToken_returns401 -- Time elapsed: 0.076 s <<< FAILURE!
-org.opentest4j.AssertionFailedError: 
-
-expected: 401 UNAUTHORIZED
- but was: 403 FORBIDDEN
-	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
-	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
-	at com.example.todo.ProfileControllerTest.getProfile_noToken_returns401(ProfileControllerTest.java:47)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-
-com.example.todo.ProfileControllerTest.changePassword_noToken_returns401 -- Time elapsed: 0.030 s <<< FAILURE!
-org.opentest4j.AssertionFailedError: 
-
-expected: 401 UNAUTHORIZED
- but was: 403 FORBIDDEN
-	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
-	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
-	at com.example.todo.ProfileControllerTest.changePassword_noToken_returns401(ProfileControllerTest.java:134)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.139 s -- in com.example.todo.ProfileControllerTest
