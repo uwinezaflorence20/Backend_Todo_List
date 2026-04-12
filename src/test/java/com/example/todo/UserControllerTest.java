@@ -172,9 +172,25 @@ class UserControllerTest extends BaseIntegrationTest {
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
-    // ── DELETE /api/users/{id} ────────────────────────────────────────────────
+    // ── GET /api/users/stats ──────────────────────────────────────────────────
 
     @Test @Order(15)
+    void getStats_admin_success() {
+        ResponseEntity<Map<String, Object>> resp = get("/api/users/stats", adminToken, MAP_TYPE);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(resp.getBody()).containsKeys("totalUsers", "admins", "regularUsers", "totalTodos");
+        assertThat(((Number) resp.getBody().get("totalUsers")).longValue()).isGreaterThanOrEqualTo(1);
+    }
+
+    @Test @Order(16)
+    void getStats_nonAdmin_returns403() {
+        ResponseEntity<String> resp = get("/api/users/stats", userToken, String.class);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    // ── DELETE /api/users/{id} ────────────────────────────────────────────────
+
+    @Test @Order(17)
     void deleteUser_success() {
         // Create a temporary user specifically for deletion
         String tmpEmail = "tmp_delete@example.com";
@@ -190,13 +206,13 @@ class UserControllerTest extends BaseIntegrationTest {
         assertThat(userRepository.findByEmail(tmpEmail)).isEmpty();
     }
 
-    @Test @Order(16)
+    @Test @Order(18)
     void deleteUser_notFound_returns404() {
         ResponseEntity<String> resp = delete("/api/users/999999", adminToken, String.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    @Test @Order(17)
+    @Test @Order(19)
     void deleteUser_nonAdmin_returns403() {
         ResponseEntity<String> resp = delete("/api/users/" + targetUserId, userToken, String.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);

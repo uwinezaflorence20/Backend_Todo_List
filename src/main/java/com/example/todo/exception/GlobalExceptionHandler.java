@@ -3,7 +3,6 @@ package com.example.todo.exception;
 import com.example.todo.dto.MessageResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
@@ -40,11 +39,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({BadCredentialsException.class, AuthenticationException.class})
     public ResponseEntity<?> handleBadCredentials(RuntimeException e) {
         return ResponseEntity.status(401).body(new MessageResponse("Error: Invalid email or password."));
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<?> handleAccessDenied(AccessDeniedException e) {
-        return ResponseEntity.status(403).body(new MessageResponse("Error: Access denied."));
     }
 
     @ExceptionHandler(Exception.class)

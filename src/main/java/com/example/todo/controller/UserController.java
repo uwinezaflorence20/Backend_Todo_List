@@ -31,6 +31,20 @@ public class UserController {
         return userRepository.findAll();
     }
 
+    @GetMapping("/stats")
+    public ResponseEntity<Map<String, Object>> getStats() {
+        long totalUsers = userRepository.count();
+        long adminCount = userRepository.countByRole("ADMIN");
+        long userCount = userRepository.countByRole("USER");
+        long totalTodos = todoRepository.count();
+        return ResponseEntity.ok(Map.of(
+                "totalUsers", totalUsers,
+                "admins", adminCount,
+                "regularUsers", userCount,
+                "totalTodos", totalTodos
+        ));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return userRepository.findById(id)

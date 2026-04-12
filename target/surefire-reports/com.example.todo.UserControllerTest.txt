@@ -1,11 +1,16 @@
 -------------------------------------------------------------------------------
 Test set: com.example.todo.UserControllerTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.104 s <<< FAILURE! -- in com.example.todo.UserControllerTest
-com.example.todo.UserControllerTest -- Time elapsed: 0.104 s <<< ERROR!
-java.lang.IllegalStateException: Login failed for admin@gmail.com: 500 INTERNAL_SERVER_ERROR
-	at com.example.todo.BaseIntegrationTest.login(BaseIntegrationTest.java:72)
-	at com.example.todo.UserControllerTest.setup(UserControllerTest.java:42)
+Tests run: 17, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1.145 s <<< FAILURE! -- in com.example.todo.UserControllerTest
+com.example.todo.UserControllerTest.getAllUsers_noToken_returns401 -- Time elapsed: 0.018 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 401 UNAUTHORIZED
+ but was: 403 FORBIDDEN
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at com.example.todo.UserControllerTest.getAllUsers_noToken_returns401(UserControllerTest.java:77)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
 

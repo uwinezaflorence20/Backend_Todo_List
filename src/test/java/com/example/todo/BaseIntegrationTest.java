@@ -5,6 +5,7 @@ import com.example.todo.repository.TodoRepository;
 import com.example.todo.repository.UserRepository;
 import jakarta.mail.Session;
 import jakarta.mail.internet.MimeMessage;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -47,9 +49,13 @@ public abstract class BaseIntegrationTest {
     private PlatformTransactionManager transactionManager;
 
     @BeforeEach
-    void mockMailSender() throws Exception {
-        // Use a real MimeMessage backed by a no-op Session instead of a Mockito mock.
-        // Mockito cannot instrument jakarta.mail classes on Java 25 via Byte Buddy.
+    void configureTestRestTemplate() throws Exception {
+        // Apache HttpClient 5 supports PATCH; Java's HttpURLConnection does not.
+        restTemplate.getRestTemplate().setRequestFactory(
+                new HttpComponentsClientHttpRequestFactory(HttpClients.createDefault()));
+
+        // Use a real MimeMessage backed by a no-op Session — Mockito cannot instrument
+        // jakarta.mail classes on Java 25 via Byte Buddy.
         Session session = Session.getInstance(new Properties());
         MimeMessage realMessage = new MimeMessage(session);
         when(mailSender.createMimeMessage()).thenReturn(realMessage);
