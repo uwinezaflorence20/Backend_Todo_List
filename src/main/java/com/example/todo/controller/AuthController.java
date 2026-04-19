@@ -7,7 +7,10 @@ import com.example.todo.repository.PasswordResetTokenRepository;
 import com.example.todo.repository.UserRepository;
 import com.example.todo.security.JwtUtils;
 import com.example.todo.service.EmailService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -57,6 +62,16 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(jwt, loginRequest.getEmail()));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String jwt = jwtUtils.extractTokenFromRequest(request);
+        if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+            jwtUtils.blacklistToken(jwt);
+        }
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok(new MessageResponse("Logged out successfully."));
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -71,12 +86,11 @@ public class AuthController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
-        // Create new user's account
         User user = new User();
         user.setUsername(signUpRequest.getUsername());
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(encoder.encode(signUpRequest.getPassword()));
-        
+
         String role = signUpRequest.getRole();
         if (role == null || role.isEmpty()) {
             role = "USER";
@@ -93,22 +107,23 @@ public class AuthController {
     public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         User user = userRepository.findByEmail(request.getEmail()).orElse(null);
 
+        // Always return the same message to prevent email enumeration
         if (user == null) {
-            // Return success even if email not found (security best practice)
             return ResponseEntity.ok(new MessageResponse("If the email exists, a reset link has been sent."));
         }
 
-        // Delete any existing tokens for this user
         tokenRepository.deleteByUser(user);
 
-        // Generate new token
         String token = UUID.randomUUID().toString();
         PasswordResetToken resetToken = new PasswordResetToken(token, user);
         tokenRepository.save(resetToken);
 
-        // Send email with reset link
         String resetLink = frontendUrl + "/reset-password?token=" + token;
-        emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
+        try {
+            emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
+        } catch (Exception e) {
+            logger.error("Failed to send password reset email to {}: {}", user.getEmail(), e.getMessage());
+        }
 
         return ResponseEntity.ok(new MessageResponse("If the email exists, a reset link has been sent."));
     }
@@ -127,12 +142,9 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Reset token has expired."));
         }
 
-        // Update password
         User user = resetToken.getUser();
         user.setPassword(encoder.encode(request.getNewPassword()));
         userRepository.save(user);
-
-        // Delete used token
         tokenRepository.delete(resetToken);
 
         return ResponseEntity.ok(new MessageResponse("Password has been reset successfully!"));
