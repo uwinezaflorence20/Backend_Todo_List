@@ -18,54 +18,67 @@ export default function TodoForm({ initial, onSave, onCancel }) {
     }
   }, [initial]);
 
+  const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave({ ...form, dueDate: form.dueDate || null });
   };
 
   return (
-    <form className="todo-form" onSubmit={handleSubmit}>
-      <div className="form-group">
-        <label>Title *</label>
-        <input
-          type="text"
-          value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
-          placeholder="What needs to be done?"
-          required
-        />
-      </div>
-      <div className="form-group">
-        <label>Description</label>
-        <textarea
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          placeholder="Add details (optional)"
-          rows={3}
-        />
-      </div>
-      <div className="form-row">
+    <div className="todo-form-card">
+      <div className="todo-form-title">{initial ? 'Edit todo' : 'New todo'}</div>
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Priority</label>
-          <select value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value })}>
-            <option value="LOW">Low</option>
-            <option value="MEDIUM">Medium</option>
-            <option value="HIGH">High</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label>Due Date</label>
+          <label className="form-label">Title *</label>
           <input
-            type="date"
-            value={form.dueDate}
-            onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
+            className="form-input"
+            type="text"
+            value={form.title}
+            onChange={set('title')}
+            placeholder="What needs to be done?"
+            required
+            autoFocus
           />
         </div>
-      </div>
-      <div className="form-actions">
-        <button type="submit" className="btn btn-primary">{initial ? 'Update' : 'Add Todo'}</button>
-        <button type="button" className="btn btn-ghost" onClick={onCancel}>Cancel</button>
-      </div>
-    </form>
+        <div className="form-group">
+          <label className="form-label">Description</label>
+          <textarea
+            className="form-textarea"
+            value={form.description}
+            onChange={set('description')}
+            placeholder="Add more details (optional)"
+            rows={2}
+          />
+        </div>
+        <div className="form-row">
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Priority</label>
+            <select className="form-select" value={form.priority} onChange={set('priority')}>
+              <option value="LOW">🟢 Low</option>
+              <option value="MEDIUM">🟡 Medium</option>
+              <option value="HIGH">🔴 High</option>
+            </select>
+          </div>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Due date</label>
+            <input
+              className="form-input"
+              type="date"
+              value={form.dueDate}
+              onChange={set('dueDate')}
+            />
+          </div>
+        </div>
+        <div className="form-actions">
+          <button type="submit" className="btn btn-primary">
+            {initial ? 'Save changes' : 'Add todo'}
+          </button>
+          <button type="button" className="btn btn-ghost" onClick={onCancel}>
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

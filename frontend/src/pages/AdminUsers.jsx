@@ -11,12 +11,13 @@ export default function AdminUsers() {
 
   const fetchData = async () => {
     setLoading(true);
+    setError('');
     try {
       const [usersRes, statsRes] = await Promise.all([getUsers(), getUserStats()]);
       setUsers(usersRes.data);
       setStats(statsRes.data);
     } catch {
-      setError('Failed to load users');
+      setError('Failed to load users. Make sure you have admin access.');
     } finally {
       setLoading(false);
     }
@@ -34,7 +35,7 @@ export default function AdminUsers() {
   };
 
   const handleDelete = async (id, username) => {
-    if (!confirm(`Delete user "${username}"? This also deletes all their todos.`)) return;
+    if (!confirm(`Delete user "${username}"?\n\nThis will also delete all their todos and cannot be undone.`)) return;
     try {
       await deleteUser(id);
       fetchData();
@@ -43,60 +44,115 @@ export default function AdminUsers() {
     }
   };
 
+  // Backend returns: { totalUsers, admins, regularUsers, totalTodos }
   return (
     <div className="page">
-      <h1>User Management</h1>
+      <div className="page-header">
+        <div>
+          <div className="page-title">User Management</div>
+          <div className="page-subtitle">Manage accounts and permissions</div>
+        </div>
+      </div>
 
+      {/* Stats */}
       {stats && (
-        <div className="stats-row mb-4">
-          <span className="stat">{stats.totalUsers} users</span>
-          <span className="stat stat-success">{stats.adminCount} admins</span>
-          <span className="stat">{stats.regularUserCount} regular</span>
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-card-icon total">👥</div>
+            <div>
+              <div className="stat-card-value">{stats.totalUsers}</div>
+              <div className="stat-card-label">Total users</div>
+            </div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-card-icon done">🛡</div>
+            <div>
+              <div className="stat-card-value">{stats.admins}</div>
+              <div className="stat-card-label">Admins</div>
+            </div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-card-icon pending">👤</div>
+            <div>
+              <div className="stat-card-value">{stats.regularUsers}</div>
+              <div className="stat-card-label">Regular users</div>
+            </div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-card-icon high">📋</div>
+            <div>
+              <div className="stat-card-value">{stats.totalTodos}</div>
+              <div className="stat-card-label">Total todos</div>
+            </div>
+          </div>
         </div>
       )}
 
-      {error && <div className="alert alert-error mb-4">{error}</div>}
+      {error && <div className="alert alert-error">{error}</div>}
 
       {loading ? (
-        <div className="loading">Loading...</div>
+        <div className="spinner-wrap"><div className="spinner" /></div>
       ) : (
-        <div className="card">
-          <table className="table">
+        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+          <table className="data-table">
             <thead>
               <tr>
-                <th>Username</th>
+                <th>User</th>
                 <th>Email</th>
                 <th>Role</th>
-                <th>Actions</th>
+                <th style={{ width: 80, textAlign: 'center' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {users.map((u) => (
-                <tr key={u.id}>
-                  <td>{u.username}{u.id === currentUser?.id ? ' (you)' : ''}</td>
-                  <td>{u.email}</td>
-                  <td>
-                    <select
-                      value={u.role}
-                      onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                      disabled={u.id === currentUser?.id}
-                      className="role-select"
-                    >
-                      <option value="USER">USER</option>
-                      <option value="ADMIN">ADMIN</option>
-                    </select>
-                  </td>
-                  <td>
-                    <button
-                      className="btn-icon btn-icon-danger"
-                      onClick={() => handleDelete(u.id, u.username)}
-                      title="Delete user"
-                    >
-                      ✕
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {users.map((u) => {
+                const isSelf = u.id === currentUser?.id;
+                const initial = (u.username || u.email || '?')[0].toUpperCase();
+                return (
+                  <tr key={u.id}>
+                    <td>
+                      <div className="user-cell">
+                        <div className="user-cell-avatar">{initial}</div>
+                        <div>
+                          <div style={{ fontWeight: 600, fontSize: 14 }}>
+                            {u.username}
+                            {isSelf && (
+                              <span style={{ marginLeft: 6, fontSize: 11, color: 'var(--text-muted)', fontWeight: 400 }}>
+                                (you)
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style={{ color: 'var(--text-muted)' }}>{u.email}</td>
+                    <td>
+                      {isSelf ? (
+                        <span className={`role-pill ${u.role === 'ADMIN' ? 'admin' : 'user'}`}>{u.role}</span>
+                      ) : (
+                        <select
+                          className="role-select"
+                          value={u.role}
+                          onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                        >
+                          <option value="USER">USER</option>
+                          <option value="ADMIN">ADMIN</option>
+                        </select>
+                      )}
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      {!isSelf && (
+                        <button
+                          className="icon-btn danger"
+                          onClick={() => handleDelete(u.id, u.username)}
+                          title="Delete user"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
