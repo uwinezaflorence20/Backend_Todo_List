@@ -3,11 +3,13 @@ C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\
 C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\repository\PasswordResetTokenRepository.java
 C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\dto\ChangePasswordRequest.java
 C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\service\EmailService.java
+C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\model\BlacklistedToken.java
 C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\security\SecurityConfig.java
 C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\config\AdminSeeder.java
 C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\controller\AuthController.java
 C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\controller\TodoController.java
 C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\model\PasswordResetToken.java
+C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\repository\BlacklistedTokenRepository.java
 C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\dto\ForgotPasswordRequest.java
 C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\controller\UserController.java
 C:\Users\user\OneDrive\Desktop\Backend_Todo_List\src\main\java\com\example\todo\TodoApplication.java
