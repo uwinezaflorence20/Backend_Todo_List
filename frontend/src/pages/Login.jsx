@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { login } from '../api/auth';
-import { getProfile } from '../api/profile';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
@@ -19,15 +18,11 @@ export default function Login() {
     setLoading(true);
     try {
       const { data } = await login(form);
-      // Store token so the profile request can use it
-      localStorage.setItem('token', data.token);
-      // Fetch full profile (username, role, id)
-      const { data: profile } = await getProfile();
-      signIn({ id: profile.id, username: profile.username, email: profile.email, role: profile.role }, data.token);
+      // JwtResponse returns { token, email } — store it and let AuthContext hydrate the rest
+      signIn({ email: data.email }, data.token);
       navigate('/dashboard');
     } catch (err) {
-      localStorage.removeItem('token');
-      setError(err.response?.data?.message || 'Invalid email or password');
+      setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -35,7 +30,6 @@ export default function Login() {
 
   return (
     <div className="auth-page">
-      {/* Left panel */}
       <div className="auth-panel">
         <div className="auth-panel-inner">
           <div className="auth-panel-logo">
@@ -65,7 +59,6 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Right form */}
       <div className="auth-form-side">
         <div className="auth-form-box">
           <h2>Welcome back</h2>
@@ -87,7 +80,7 @@ export default function Login() {
                 autoFocus
               />
             </div>
-            <div className="form-group mb-3">
+            <div className="form-group mb-2">
               <label className="form-label">Password</label>
               <input
                 className="form-input"
@@ -98,7 +91,7 @@ export default function Login() {
                 required
               />
             </div>
-            <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
+            <div style={{ textAlign: 'right', marginBottom: '1.25rem' }}>
               <Link to="/forgot-password" style={{ fontSize: 13, color: 'var(--primary)', textDecoration: 'none' }}>
                 Forgot password?
               </Link>
