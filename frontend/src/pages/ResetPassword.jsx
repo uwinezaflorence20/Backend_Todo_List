@@ -22,7 +22,7 @@ export default function ResetPassword() {
       await resetPassword({ token, newPassword: form.newPassword });
       navigate('/login', { state: { message: 'Password reset! You can now sign in with your new password.' } });
     } catch (err) {
-      setError(err.response?.data?.message || 'Reset failed. The link may have expired. try again');
+      setError(err.response?.data?.message || 'Reset failed. !The link may have expired. try again');
     } finally {
       setLoading(false);
     }
