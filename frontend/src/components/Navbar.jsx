@@ -40,7 +40,7 @@ export default function Navbar() {
         {isAdmin && <span className="badge badge-admin" style={{ fontSize: 11 }}>Admin</span>}
         <div className="nav-avatar">{initial}</div>
         <button className="btn btn-ghost btn-sm" onClick={handleLogout}>
-          Logout
+          Logout!
         </button>
       </div>
     </nav>
